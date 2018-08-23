@@ -1,0 +1,22 @@
+# A simple ChordPro song.
+
+{title: Black Horse And The Cherry Tree}
+{subtitle: KT Tunstall}
+{key: Em}
+{time: 4/4}
+{tempo: 175}
+
+
+{Intro}
+Woo, [Em]hoo, woo, [B7#9]hoo, woo hoo
+
+{start_of_verse}
+Well, my [NC]heart knows better than I know myself so I'm
+gonna  let it do all the talkin' (Woo [Em] hoo,  Woo
+[B7] hoo) [Em] I  [NC]came across a place in the middle of nowhere with a
+big black horse and a cherry tree (Woo)  hoo
+{end_of_verse}
+
+# {end_of_verse}
+
+{comment: (c)2018 erikbuunk.com}

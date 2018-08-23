@@ -1,0 +1,165 @@
+* {
+  font-family: "Courie New", monospace;
+  font-size: 14pt;
+  /* border-width: 1pt; */
+  /* border-color: #f00; */
+  /* border-style: solid; */
+}
+
+body {
+  margin: 10pt;
+  padding: 10pt;
+  /* overflow: hidden; */
+  /* background-color: #ccc; */
+  height: 100%;
+}
+
+canvas {
+  margin: auto;
+  padding-top: 40pt;
+}
+
+.title {
+  text-align: center;
+  font-size: 20pt;
+  font-style: normal;
+  font-weight: bold;
+}
+
+.subtitle {
+  text-align: center;
+  font-style: italic;
+  font-size: 14pt;
+  font-weight: bold;
+}
+
+.score {
+  /* background-color: #fff; */
+  overflow: scroll;
+  clear: both;
+  height: 100%;
+}
+
+.meta {}
+
+.chord {
+  font-weight: bold;
+}
+
+.lyrics {
+  font-family: "Times New Roman", Times;
+}
+
+.literal {
+  clear: both;
+  font-size: 10pt;
+}
+
+/* .chorus {
+  padding-left: 16pt;
+  font-weight: bold;
+  clear: both;
+} */
+
+.line {
+  clear: both;
+}
+
+.run {
+  padding: 1pt;
+  display: inline-block;
+}
+
+.key, .label {
+  float: left;
+}
+
+.tab {
+  /* font-size: 1pt; */
+  padding: 0;
+  margin: 0;
+}
+
+.intro, .outro, .verse, .chorus, .bridge, .prechorus {
+  clear: both;
+  width: 100%;
+  /* background-color: #cda; */
+  padding-top: 20pt;
+  padding-bottom: 5pt;
+  /* display: flex; */
+}
+
+.left {
+  width: 20%;
+  float: left;
+  /* background-color: #f00; */
+}
+
+.middle {
+  width: 57%;
+  float: left;
+  /* background-color: #0f0; */
+}
+
+.right {
+  width: 20%;
+  float: right;
+  /* background-color: #00f; */
+}
+
+.bars4, .bars8, .bars16 {
+  width: 25%;
+  background-color: #0dd;
+  float: left;
+  height: 100%;
+  align-items: baseline;
+  /* border-left: 1px #000 solid; */
+  border-right: 1px #000 solid;
+  vertical-align: ;
+  padding-left: 2pt;
+  /* padding-right: 2pt; */
+}
+
+.bars8 {
+  width: 12.5%;
+  /* font-size: 12pt; */
+}
+
+.bars16 {
+  width: 6.25%;
+  /* font-size: 6pt; */
+}
+
+/* title (short: t)
+subtitle (short: st)
+artist
+composer
+lyricist
+copyright
+album
+year
+key
+time
+tempo
+duration
+capo
+meta */
+
+/* comment (short: c)
+comment_italic (short: ci)
+comment_box (short: cb)
+chorus
+image */
+
+/* start_of_chorus (short: soc)
+end_of_chorus (short: eoc)
+start_of_verse
+end_of_verse
+start_of_tab (short: sot)
+end_of_tab (short: eot)
+start_of_grid
+end_of_grid */
+
+/* define
+chord
+ */

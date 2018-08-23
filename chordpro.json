@@ -1,0 +1,26 @@
+score: {
+  "metadata": {
+    "title": "",
+    "subtitle": "",
+    "artist": "",
+    "composer": "",
+    "lyricist": "",
+    "copyright": "",
+    "album": "",
+    "year": "",
+    "key": "",
+    "time": "",
+    "tempo": "",
+    "duration": "",
+    "capo": ""
+  } ,
+  "score": {
+    intro
+    outro
+    verse
+    chorus
+    prechorus
+    bridge
+    solo
+  }
+}

@@ -1,0 +1,74 @@
+ * {
+   font-family: "Arial";
+   padding: 4px;
+ }
+
+ .verse, .intro, .outro, .chorus, .prechorus, .bridge, .solo {
+   /* background-color: #f00; */
+   display: flex;
+   flex-direction: row;
+   flex-wrap: nowrap;
+ }
+
+ .chorus {
+   background-image: linear-gradient(to right, white , grey);
+ }
+
+ .title {
+   text-align: center;
+   font-size: 32pt;
+   font-weight: bold;
+ }
+
+ .subtitle {
+   text-align: center;
+ }
+
+ .artist, .composer, .lyricist {
+   font-family: serif;
+   text-align: center;
+ }
+
+ .album, .year, .key, .time, .temp, .duration, .capo, .copyright {
+   display: none;
+   visibility: hidden;
+ }
+
+ .content {
+   /* width: 100%; */
+ }
+
+ .description {
+   width: 20%;
+   font-weight: bold;
+   /* background-color: #00f; */
+ }
+
+ .lines {
+   width: 80%;
+   /* background-color: #0f0; */
+ }
+
+ .line {
+   display: flex;
+   /* background-color: DodgerBlue; */
+   flex-direction: row;
+   flex-wrap: wrap;
+ }
+
+ .run {
+   /* background-color: #f1f1f1; */
+   font-size: 16px;
+   display: flex;
+   flex-direction: column;
+   align-items: flex-start;
+   justify-content: flex-end;
+ }
+
+ .chord, .lyrics {
+   /* background-color: #ccc; */
+ }
+
+ .chord {
+   font-weight: bold;
+ }
