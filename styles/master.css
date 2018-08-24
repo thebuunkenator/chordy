@@ -8,8 +8,7 @@
    display: flex;
    flex-direction: row;
    flex-wrap
-   text-transform: ca
-   pitalize;: nowrap;
+   text-transform: capitalize;: nowrap;
  }
 
  .chorus {
@@ -27,19 +26,11 @@
  }
 
  .artist, .composer, .lyricist {
-   {
-
-}y 
- {
-
-} {
-
+}
+ .key {
 }
 
-   texter;
- }
-
- .album, .year, .key, .time, .temp, .duration, .capo, .copyright {
+ .album, .year,, .time, .temp, .duration, .capo, .copyright {
    display: none;
    visibility: hidden;
  }
