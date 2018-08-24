@@ -1,49 +1,18 @@
-// TODO: div blokken voor chorsu, tab e.d
-// TODO: lege div.run tags verwijdern (tab)
-// TODO: transponeren
-// TODO: score=array is nog niet helemaal netjes (array von objjecten of een tekststring)
-// TODO: als dit allemaal netjes werk, dan dingen toevoegen als akkoorden schemas, ritmes
-
-
-
-/*
-toekomst:
-- akkoorden, maatwerk akkoorden
-capoo
-opmerkingen over stemming gitaar
-"Key of ...", ook mminur
-Onderdelen links
-Intro
-Verse
-PreChorus
-Chorus
-Interlude/Bridge
-Outro
-
-nieuwe functionaliteit
-- teksten in maten
-- herhalingen, coda's, 1e en 2e herhalingen etc.
-- ritmes
-  = in plaats van lyrics
-  = boven lyrics
-- tabs
-- maatwisseling
-
-*/
 "use strict"
 let APP = "Chordy";
 let VERSION = "0.1";
 
 let currentStyle = ""
+let scorePart
 let metaData = {}
-
-let score = []
+let chords =[]
+let score = [] 
+let currentPart
 let lyricsOnly = false
 
 let result;
 
 function preload() {
-
   result = loadStrings('assets/twinkle.chp')
 
 }
@@ -56,87 +25,175 @@ function setup() {
 }
 
 
-function handleMetaDataHTML(meta) {
-  let metaDiv = createDiv()
-
-  switch (meta) {
-    case "start_of_chorus":
-    case "soc":
-      currentStyle = "chorus"
-      break;
-    case "start_of_verse":
-    case "sov":
-    case "end_of_grid":
-    case "end_of_chorus":
-    case "end_of_tab":
-      currentStyle = ""
-      break
-    case "start_of_tab":
-      currentStyle = "tab"
-      break
-    case "chorus":
-      metaDiv.html("Chorus")
-      metaDiv.addClass('chorus')
-
-    default:
-
+function findMetaData(key_value) {
+  for (let d of directives) {
+    if (d.name == key_value) {
+      //console.log('gevonden: ' + key_value)
+      return d
+    }
   }
-
-  return metaDiv
+  console.log('niet gevonden: ' + key_value)
+  return null
 }
 
 function parseSong() {
+  
+
   for (let line of result) {
     //vind  directives
+
     let pattern = /{(.*)}/
     let meta = pattern.exec(line)
 
-    //metadata regel
     if (meta != null) {
-      // console.log(meta[1])
-      let metaDict = splitTokens(meta[1], ":")
+        handleMetaData(meta)
+    }
+    else { 
+        handleScoreLine(line)
+    }
 
+  }
+  console.log(score);
+  console.log(metaData);
+  console.log(chords)
+}
+
+function handleScoreLine(line) {
+
+    //console.log('scoreline: '+ line)
+    if(line != ""){
+      addToScore(parseScoreLine(line) )
+    }  
+}
+
+function handleMetaData(meta) {
+     let key
+     let value
+
+     let metaDict = splitTokens(meta[1], ":")
+      
+      
+      //meta data met attribuut
       if (metaDict.length > 1) {
-        // console.log(metaDict[0], metaDict[1])
+
+        key = metaDict[0]
+        value = metaDict[1]
+
+        let currentDirective = findMetaData(key);
 
 
-        let key = metaDict[0]
-        let value = metaDict[1]
-        // console.log(key, value);
 
-        // check of het een score metadata is of inline directives
-        if (key == "comment" || key == "" || key == "c") {
-          let elm = {
-            "comment": value
-          };
-          score.push([elm])
+        if (currentDirective) {
 
-        } else {
-          // Check directive
-          metaData[key] = trim(value)
+          if (currentDirective.type == 'meta-data') {
+            metaData[key] = trim(value)
+          } else {
+            let elm={}
+            switch (key){
+              case 'c':
+              case 'comment':
+              case 'ci':
+              case 'comment_italic':
+              case 'cb':
+              case 'comment_box':
+              case 'image':
+                elm[key] = value
+                addToScore(elm)
+                break
+              case 'define':
+                // console.log('define')
+              case 'chord':
+                // console.log('chord') //TODO: openemen in score
+                elm[key] = value
+                chords.push(elm)
+                break
+              default: 
+                console.log('unknown metadata type' + key)
+                
+
+            }
+
+          }
         }
+        // l
+      } else { 
+         key = metaDict[0]
+        switch(key) {
+          case 'chorus':
+            createPart('chorus');
+            addToScore('Chorus')
+            endPart()
+            break
+          case 'start_of_chorus':
+          case 'soc':
+            createPart('chorus')
+            break
+          case 'start_of_tab':
+          case 'sot':
+            createPart('tab')
+            break
+          case 'start_of_grid':
+          case 'sog':
+            createPart('grid')
+            break
+          case 'end_of_tab':
+          case 'eot':
+          case 'end_of_chorus':
+          case 'eoc':
+          case 'end_of_grid':
+          case 'eog':
+            endPart()
+            break
+          default:
+            console.log('unknown meta (no attr):' + key)
 
-      } else {
-        let elm = {
-          "meta": meta[1]
-        };
-        score.push([elm])
+        }
       }
+}
 
-    } else {
-      if (!(score.length == 0 && line == "")) {
-        // reguliere regel
-        let myList = splitTokens(line, "[")
+function createPart(partName) {
+
+  if(currentPart!=null) {
+    endPart()
+  }
+  currentPart = {}
+  currentPart['part']=partName
+  currentPart['lines']=[]
+
+}
+
+function endPart() {
+  //add object to score and add to teh score
+  if(currentPart!=null) {
+    score.push(currentPart)
+    currentPart=null
+  }
+}
+
+function addToScore(elm) {
+  if(currentPart==null) {
+    createPart('verse')
+  } 
+  currentPart.lines.push(elm)
+
+}
+
+function parseScoreLine (line) {
+  let lineRuns =[]
+  let myList = splitTokens(line, "[")
         let partNumbers = myList.length
 
         // Kijk of de regl uit meedere delen bestaat
-        if (partNumbers < 2) {
-          if (trim(line)[0] != "#") //remove comments
-            score.push(line)
-
+        if (partNumbers < 2) { // 1 deel: lege regel of regel met commentaar
+          if (trim(line)[0] != "#") {
+            let elm = {}
+            elm['line']=line
+            return elm
+          }
         } else {
-          let lineRuns = []
-
+         
+           
+            
           for (let linePart of myList) {
             let run = {}
             let chords = splitTokens(linePart, "]")
@@ -153,46 +210,41 @@ function parseSong() {
             lineRuns.push(run)
 
           }
-          score.push(lineRuns)
+         
         }
 
-        // score.push(line)
-
-      }
-    }
-
-
-
-  }
-  
-  if (metaData.title != null) {
-    document.title = APP + " - " + metaData.title;
-    } else {
-      doucment.title = APP;
-    };
-  
-  console.log(score);
-  console.log(metaData);
+        return lineRuns
 
 }
 
-function createHTMLScore() {
 
+function createHTMLScore() {
 
   // header
   let title = createDiv(metaData['title'])
   title.addClass('title')
+  
+  if (metaData.title != null) {
+    document.title = APP + " - " + metaData.title;
+  } else {
+    doucment.title = APP;
+  };
+
   let subtitle = createDiv(metaData['subtitle'])
   subtitle.addClass('subtitle')
 
-  // key
+  // GUI: key
   let keyDiv = createDiv().addClass('key')
   let keyLabel = createDiv('Key:').addClass('label')
   let keyChoice = createSelect().addClass('keyChoice')
-  for (let k of keyOrder) {
-    keyChoice.option(k)
-    if (k.toUpperCase() == metaData.key.toUpperCase()) {
-      keyChoice.selected(k)
+
+    
+  for (let k of keyOrder) {       
+    keyChoice.option(k)    
+    if(metaData.key !=null) {      
+      if (k.toUpperCase() == metaData.key.toUpperCase()) {
+        keyChoice.selected(k)       
+      }    
     }
 
   }
@@ -202,58 +254,33 @@ function createHTMLScore() {
 
   let scoreDiv = createDiv('').addClass("score")
 
-  for (let line of score) {
-    let regel = createDiv('')
-    if (currentStyle != "") { //nadeel is dat datze per regel is en niet per blok
-      regel.addClass(currentStyle)
-    } else {
-      regel.addClass('line')
-    }
-    // console.log(line);
-    for (let run of line) {
+  for (let part of score) {
+    let partDiv = createDiv('').addClass(part.part)
+    let descDiv = createDiv(part.part).addClass('description')
+    let linesDiv = createDiv('').addClass('lines')
+    partDiv.child(descDiv)
+    partDiv.child(linesDiv)
+    
+    for (let line of part.lines) {
+      
+      let lineDiv = createDiv('').addClass("line")
+      
+      for (let i = 0; i<line.length; i++)
+       {
+         let run = line[i]
+        let runDiv = createDiv().addClass("run")
+        let chordDiv = createDiv(run.chord).addClass("chord")
+        let lyricsDiv = createDiv(run.lyrics).addClass("lyrics")
 
-      let kolom = createDiv('').addClass('run')
+        runDiv.child(chordDiv)
+        runDiv.child(lyricsDiv)
 
-      if (run.meta) {
-        // printText(run.meta)
-        kolom.child(handleMetaDataHTML(run.meta))
-      } else {
-        if (run.chord) {
-          kolom.child(createDiv(run.chord).addClass("chord"))
-        }
-
-        if (run.lyrics) {
-          kolom.child(createDiv(run.lyrics).addClass("lyrics"))
-        }
-
-        if (run.comment) {
-          // printText(run.comment)
-          kolom.child(createDiv(run.Comment).addClass("comment"))
-        }
-
-        // console.log(kolom.html())
-
-        if (kolom.html() == "") {
-          // console.log("removing");
-          kolom.remove()
-        }
-
-
-
+        lineDiv.child(runDiv)
       }
 
-      regel.child(kolom)
-
+      linesDiv.child(lineDiv)
     }
 
-    if (typeof line == "string") {
-      let vrijeDiv = createDiv(line).addClass('literal')
-      regel.child(vrijeDiv)
-    }
-
-    scoreDiv.child(regel)
-
+    scoreDiv.child(partDiv)
   }
-
-
 }
